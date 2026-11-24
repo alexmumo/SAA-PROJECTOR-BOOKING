@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Projector Booking</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--text:#18202e;--muted:#667085;--line:#e1e6ef;--accent:#2457c5;--on:#fff;--free:#e8f6ee;--freeT:#157347;--mine:#dbe7ff;--taken:#f1f3f7;--input:#fff;--bad:#c0392b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1420;--card:#171d2b;--text:#e8ecf5;--muted:#97a1b5;--line:#2a3347;--accent:#7aa2ff;--on:#0b1530;--free:#12301f;--freeT:#6fdc9b;--mine:#1d3366;--taken:#1e2535;--input:#0f1420;--bad:#ff8a7a}}
+:root[data-theme="dark"]{--bg:#0f1420;--card:#171d2b;--text:#e8ecf5;--muted:#97a1b5;--line:#2a3347;--accent:#7aa2ff;--on:#0b1530;--free:#12301f;--freeT:#6fdc9b;--mine:#1d3366;--taken:#1e2535;--input:#0f1420;--bad:#ff8a7a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
+.top{max-width:980px;margin:0 auto;padding:14px 14px 6px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+h1{font-size:1.3rem;margin:0}
+.who{display:flex;align-items:center;gap:8px;font-size:.9rem}.who select{width:auto;min-width:190px}
+nav{max-width:980px;margin:0 auto;padding:6px 14px;display:flex;gap:6px}
+nav button{flex:0 0 auto}
+main{max-width:980px;margin:0 auto;padding:8px 14px 60px}
+button,input,select,textarea{font:inherit;color:var(--text)}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--input)}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.tab{border:1px solid var(--line);background:var(--card);padding:8px 16px;border-radius:99px;cursor:pointer}
+.tab.on{background:var(--accent);color:var(--on);border-color:var(--accent);font-weight:600}
+.btn{background:var(--accent);color:var(--on);border:0;padding:9px 16px;border-radius:8px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.sm{padding:5px 10px;font-size:.82rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.date{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.date h2{margin:0 6px;font-size:1.1rem;flex:1 1 auto;text-align:center}
+.wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:520px}
+th,td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:.85rem;color:var(--muted);background:var(--card)}
+th:first-child,td:first-child{position:sticky;left:0;background:var(--card);z-index:1;width:92px;font-weight:600;font-size:.88rem}
+td small,th small{display:block;color:var(--muted);font-weight:400;font-size:.74rem}
+.slot{width:100%;min-height:50px;border-radius:9px;padding:6px 8px;text-align:left;font-size:.86rem;border:0}
+.free{background:var(--free);color:var(--freeT);font-weight:600;cursor:pointer;text-align:center}
+.free:hover{filter:brightness(.96)}
+.taken{background:var(--taken)}.taken.mine{background:var(--mine);box-shadow:inset 0 0 0 2px var(--accent)}
+.taken b{display:block;line-height:1.2}.taken small{color:var(--muted)}
+.x{background:none;border:0;color:var(--bad);cursor:pointer;padding:2px 0;font-size:.78rem;text-decoration:underline}
+.past{color:var(--muted);text-align:center}
+.muted{color:var(--muted);font-size:.88rem}
+.pill{display:inline-block;background:var(--mine);padding:2px 10px;border-radius:99px;font-size:.82rem}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.row>input[type=text]{flex:1 1 150px}
+.list{display:flex;flex-direction:column;gap:6px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.dlg{background:var(--card);border-radius:14px;padding:18px;width:100%;max-width:400px}
+.dlg h3{margin:0 0 4px}.dlg label{display:block;font-size:.85rem;color:var(--muted);margin:12px 0 4px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--text);color:var(--bg);padding:10px 18px;border-radius:99px;z-index:30;max-width:92%;font-size:.92rem}
+.warn{border:1px solid var(--bad);color:var(--bad);border-radius:10px;padding:10px 14px;margin-bottom:10px}
+textarea{min-height:110px}
+</style>
+</head>
+<body>
+<div class="top"><h1>📽️ Projector Booking</h1><div class="who"><label for="me">I am</label><select id="me"></select></div></div>
+<nav id="nav"></nav>
+<main id="app"></main>
+<div id="modal"></div><div id="toast"></div>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const ymd = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const addDays = (s,n) => { const [y,m,d]=s.split("-").map(Number); return ymd(new Date(y,m-1,d+n)); };
+const nice = s => { const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long"}); };
+const slug = (s,i) => s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"") || "t"+i;
+const lsGet = k => { try { return localStorage.getItem(k) || ""; } catch(e){ return ""; } };
+const lsSet = (k,v) => { try { localStorage.setItem(k,v); } catch(e){} };
+
+const DEF = { projectors:[1,2,3].map(n=>({id:"p"+n,name:"Projector "+n,on:true})), lessons:[1,2,3,4,5,6,7,8].map(n=>({n,time:""})) };
+let db=null, admin=false, cfg=DEF, teachers=[], bk={}, loaded=false;
+let tab="book", day=ymd(new Date()), me=lsGet("pb_me"), modal=null;
+const today = () => ymd(new Date());
+
+function say(m){ const t=$("#toast"); t.innerHTML='<div class="toast">'+esc(m)+'</div>'; clearTimeout(say.t); say.t=setTimeout(()=>t.innerHTML="",3500); }
+
+function renderWho(){
+  const s=$("#me"); const opts=teachers.length ? teachers : [];
+  s.innerHTML='<option value="">'+(opts.length?"Choose your name…":"No teachers added yet")+'</option>'+opts.map(n=>`<option ${n===me?"selected":""}>${esc(n)}</option>`).join("");
+}
+$("#me").addEventListener("change",e=>{ me=e.target.value; lsSet("pb_me",me); render(); });
+
+function render(){
+  if(tab==="admin" && document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName) && $("#app").contains(document.activeElement)) return;
+  renderWho();
+  const tabs=[["book","Book a projector"],["mine","My bookings"]]; if(admin) tabs.push(["admin","Admin"]);
+  $("#nav").innerHTML=tabs.map(([k,v])=>`<button class="tab ${tab===k?"on":""}" data-act="tab" data-k="${k}">${v}</button>`).join("");
+  let h = db ? "" : '<div class="warn">Bookings can’t be saved right now. Open this page while signed in to claude.ai.</div>';
+  if(!loaded && db) h += '<p class="muted">Loading…</p>';
+  if(tab==="book") h+=viewBook(); else if(tab==="mine") h+=viewMine(); else if(tab==="admin"&&admin) h+=viewAdmin();
+  $("#app").innerHTML=h;
+}
+
+function viewBook(){
+  const ps=cfg.projectors.filter(p=>p.on), isPast=day<today();
+  let free=0,total=ps.length*cfg.lessons.length;
+  ps.forEach(p=>cfg.lessons.forEach(l=>{ if(!bk[`${day}_${l.n}_${p.id}`]) free++; }));
+  let h=`<div class="date"><button class="btn ghost sm" data-act="day" data-d="-1">◀</button><h2>${esc(nice(day))}${day===today()?' <span class="pill">Today</span>':""}</h2><button class="btn ghost sm" data-act="day" data-d="1">▶</button>${day!==today()?'<button class="btn ghost sm" data-act="day" data-d="0">Today</button>':""}</div>`;
+  h+=`<p class="muted" style="margin:0 0 8px">${isPast?"This day has passed.":`${free} of ${total} slots free. Tap a green slot to book it.`}</p>`;
+  h+='<div class="wrap"><table><thead><tr><th>Lesson</th>'+ps.map(p=>`<th>${esc(p.name)}</th>`).join("")+"</tr></thead><tbody>";
+  cfg.lessons.forEach(l=>{
+    h+=`<tr><td>Lesson ${l.n}${l.time?`<small>${esc(l.time)}</small>`:""}</td>`;
+    ps.forEach(p=>{
+      const id=`${day}_${l.n}_${p.id}`, b=bk[id];
+      if(b){ const mine=b.teacher===me;
+        h+=`<td><div class="slot taken ${mine?"mine":""}"><b>${esc(b.teacher)}${mine?" (you)":""}</b>${b.note?`<small>${esc(b.note)}</small>`:""}${(mine||admin)?`<button class="x" data-act="cancel" data-id="${esc(id)}">Cancel</button>`:""}</div></td>`;
+      } else h+= isPast ? '<td class="past">–</td>' : `<td><button class="slot free" data-act="slot" data-l="${l.n}" data-p="${p.id}">Book</button></td>`;
+    });
+    h+="</tr>";
+  });
+  return h+"</tbody></table></div>";
+}
+
+function viewMine(){
+  if(!me) return '<div class="card">Choose your name at the top to see your bookings.</div>';
+  const pn=id=>(cfg.projectors.find(p=>p.id===id)||{name:id}).name;
+  const mine=Object.entries(bk).filter(([id,b])=>b.teacher===me&&b.date>=today()).sort((a,b)=>(a[1].date+a[1].lesson).localeCompare(b[1].date+b[1].lesson,undefined,{numeric:true}));
+  if(!mine.length) return '<div class="card">You have no upcoming bookings.</div>';
+  return `<p class="muted">${mine.length} upcoming booking${mine.length>1?"s":""}</p><div class="list">`+mine.map(([id,b])=>`<div class="item"><div><b>${esc(nice(b.date))}</b> · Lesson ${esc(b.lesson)}<div class="muted">${esc(pn(b.pid))}${b.note?" · "+esc(b.note):""}</div></div><button class="btn ghost sm" data-act="cancel" data-id="${esc(id)}">Cancel</button></div>`).join("")+"</div>";
+}
+
+function viewAdmin(){
+  let h='<div class="card"><h3 style="margin-top:0">Teachers ('+teachers.length+')</h3><p class="muted">Paste names, one per line (for example, a column copied from Excel). Existing names are kept.</p><textarea id="tl" placeholder="Jane Wanjiku&#10;John Otieno"></textarea><div class="row" style="margin-top:8px"><button class="btn" data-act="import">Import teachers</button></div>';
+  if(teachers.length) h+='<div class="list" style="margin-top:10px;max-height:260px;overflow:auto">'+teachers.map(n=>`<div class="item"><span>${esc(n)}</span><button class="x" data-act="rmt" data-n="${esc(n)}">Remove</button></div>`).join("")+"</div>";
+  h+='</div><div class="card"><h3 style="margin-top:0">Projectors</h3>';
+  cfg.projectors.forEach(p=>{ h+=`<div class="row"><input type="text" data-pn="${esc(p.id)}" value="${esc(p.name)}" maxlength="30"><label class="muted"><input type="checkbox" style="width:auto" data-pon="${esc(p.id)}" ${p.on?"checked":""}> In service</label></div>`; });
+  h+='<div class="row"><button class="btn ghost" data-act="addp">+ Add projector</button></div><h3>Lesson times <span class="muted">(optional)</span></h3><div class="row">'+cfg.lessons.map(l=>`<div style="flex:1 1 130px"><label class="muted">Lesson ${l.n}</label><input type="text" data-lt="${l.n}" value="${esc(l.time)}" placeholder="e.g. 8:00–8:40" maxlength="20"></div>`).join("")+'</div><div class="row"><button class="btn" data-act="savecfg">Save changes</button></div></div>';
+  return h;
+}
+
+async function saveCfg(next){ try{ await db.doc("config/main").set(next); }catch(e){ say("Could not save. Check your connection."); } }
+function readCfg(){
+  const projectors=cfg.projectors.map(p=>({id:p.id,name:(document.querySelector(`[data-pn="${p.id}"]`)?.value||p.name).trim()||p.name,on:document.querySelector(`[data-pon="${p.id}"]`)?.checked ?? p.on}));
+  const lessons=cfg.lessons.map(l=>({n:l.n,time:(document.querySelector(`[data-lt="${l.n}"]`)?.value||"").trim()}));
+  return {projectors,lessons};
+}
+
+document.addEventListener("click", async e=>{
+  const el=e.target.closest("[data-act]"); if(!el) return; const a=el.dataset.act;
+  if(a==="tab"){ tab=el.dataset.k; render(); }
+  else if(a==="day"){ const d=+el.dataset.d; day = d===0 ? today() : addDays(day,d); render(); }
+  else if(a==="slot"){
+    if(!db) return say("Bookings can’t be saved right now.");
+    if(!me){ say("First choose your name at the top."); $("#me").focus(); return; }
+    modal={l:el.dataset.l,p:el.dataset.p}; openModal();
+  }
+  else if(a==="cancel"){ try{ await db.doc("bookings/"+el.dataset.id).delete(); say("Booking cancelled."); }catch(x){ say("Could not cancel."); } }
+  else if(a==="import"){
+    const names=[...new Set($("#tl").value.split("\n").map(s=>s.replace(/\t.*/,"").trim()).filter(Boolean))];
+    let n=0; for(let i=0;i<names.length;i++){ try{ await db.doc("teachers/"+slug(names[i],i)).set({name:names[i]}); n++; }catch(x){} }
+    say(n+" teacher"+(n===1?"":"s")+" imported."); $("#tl").value="";
+  }
+  else if(a==="rmt"){ try{ await db.doc("teachers/"+slug(el.dataset.n,0)).delete(); }catch(x){} }
+  else if(a==="addp"){ const next=readCfg(); const k=Math.max(0,...next.projectors.map(p=>+p.id.slice(1)||0))+1; next.projectors.push({id:"p"+k,name:"Projector "+k,on:true}); cfg=next; await saveCfg(next); render(); }
+  else if(a==="savecfg"){ const next=readCfg(); cfg=next; await saveCfg(next); say("Saved."); render(); }
+  else if(a==="close"){ closeModal(); }
+  else if(a==="confirm"){ confirmBook(); }
+});
+
+function openModal(){
+  const p=cfg.projectors.find(x=>x.id===modal.p), l=cfg.lessons.find(x=>String(x.n)===modal.l);
+  $("#modal").innerHTML=`<div class="ov"><div class="dlg" role="dialog" aria-modal="true"><h3>Book ${esc(p.name)}</h3><div class="muted">${esc(nice(day))} · Lesson ${esc(l.n)}${l.time?" ("+esc(l.time)+")":""}</div>
+  <label for="note">Class or subject (optional)</label><input id="note" maxlength="40" placeholder="e.g. Form 2 Biology">
+  <label for="rep">Repeat</label><select id="rep"><option value="1">Just this once</option><option value="4">Every week for 4 weeks</option><option value="8">Every week for 8 weeks</option><option value="13">Every week for 13 weeks (a term)</option></select>
+  <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" data-act="close">Cancel</button><button class="btn" data-act="confirm">Confirm booking</button></div></div></div>`;
+  $("#note").focus();
+}
+function closeModal(){ $("#modal").innerHTML=""; modal=null; }
+
+async function confirmBook(){
+  const {l,p}=modal, note=$("#note").value.trim(), rep=+$("#rep").value; let ok=0, skip=0;
+  for(let k=0;k<rep;k++){
+    const date=addDays(day,7*k), id=`${date}_${l}_${p}`;
+    const clash=Object.values(bk).some(b=>b.date===date&&String(b.lesson)===String(l)&&b.teacher===me);
+    try{
+      const s=await db.doc("bookings/"+id).get();
+      if(s.exists||clash){ skip++; continue; }
+      await db.doc("bookings/"+id).set({date,lesson:l,pid:p,teacher:me,note,at:Date.now()}); ok++;
+    }catch(x){ skip++; }
+  }
+  closeModal();
+  say(ok? `Booked${rep>1?" "+ok+" week"+(ok>1?"s":""):""}.`+(skip?` ${skip} skipped (already taken or you already have a projector that lesson).`:"") : "Not booked: that slot is taken, or you already have a projector that lesson.");
+}
+
+(async()=>{
+  render();
+  try{
+    const c=await claude.use("db"); if(!c){ render(); return; } db=c;
+    const u=await claude.use("user"); try{ admin=u ? await u.canEdit() : false; }catch(e){}
+    const timer=setTimeout(()=>{ loaded=true; render(); },10000);
+    const ready=()=>{ loaded=true; clearTimeout(timer); render(); };
+    db.doc("config/main").onSnapshot(s=>{ if(s.exists&&s.data().projectors&&s.data().lessons) cfg=s.data(); ready(); },()=>ready());
+    db.collection("teachers").onSnapshot(s=>{ teachers=s.docs.map(d=>d.data().name).filter(Boolean).sort((a,b)=>a.localeCompare(b)); ready(); },()=>ready());
+    db.collection("bookings").onSnapshot(s=>{ bk={}; s.docs.forEach(d=>bk[d.id]=d.data()); ready(); },()=>ready());
+  }catch(e){ render(); }
+})();
+</script>
+</body>
+</html>
